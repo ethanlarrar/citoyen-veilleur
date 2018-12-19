@@ -1,0 +1,13 @@
+{% extends "sitereview/base.html" %}
+
+{% block title %} Create {% endblock %}
+
+
+{% block content %}
+<h1>Create website alert</h1>
+<form method="post" action="{% url 'sitereview:create_website_alert' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit">
+</form>
+{% endblock %}

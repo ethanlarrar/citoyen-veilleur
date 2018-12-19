@@ -1,0 +1,20 @@
+{% extends 'sitereview/base.html' %}
+
+{% block title %} {{website_alert.title}} {% endblock %}
+
+{% block content %}
+<p><a href="{% url 'sitereview:list_website_alert' %}">Return to the list</a></p>
+<h1>{{website_alert.title}}</h1>
+{% if website_alert.site_closed %}
+<h2>Warning</h2>
+<p>This website has been closed recently.</p>
+{% endif %}
+<p>
+    {{website_alert.remark}}
+</p>
+
+<p><a href="{{website_alert.url}}">{{website_alert.url}}</a><br>
+    {{website_alert.date}}
+</p>
+{% endblock %}
+

@@ -1,0 +1,68 @@
+from django.shortcuts import render,get_object_or_404,get_list_or_404
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
+from .models import Question,Website_alert   
+from django.template import loader
+from .forms import CreateForm
+# Cre=te your views here.
+def index(request):
+    # Méthode 1
+    # template = loader.get_template('sitereview/index.html')
+    context = {'age_utilisateur': 18, 'nom': 'Ethan', 'est_majeur': True, 'cartes': ['As', '3pique', '5coeur']}
+    ## Pour y acceder en python: context['age_utilisateur']
+    # return HttpResponse(template.render(context, request))
+    ## Méthode 2 (condensée)
+    context.update({'tab':'home'})
+    return render(request, 'sitereview/index.html', context)
+
+def au_revoir(request):
+    return HttpResponse("Au revoir!")
+
+def detail(request,question_id):
+    ## Premier temps: utiliser des templates ici
+    try:
+        q = Question.objects.get(id=question_id)
+        return HttpResponse(q.question_text)
+    except Question.DoesNotExist:
+        return HttpResponse("La question n'existe pas")
+
+def afficher_questions(request):
+    ### Deuxième temps:
+    ## Afficher la liste de toutes les questions (seulement le titre)
+    # Indice: cf tutoriel chapitre 2
+    pass
+    
+### http://127.0.0.1:8000/sitereview/aurevoir
+
+def display_website_alert(request,website_alert_id):
+    ## get_list_or_404 pour une liste 
+    website_alert = get_object_or_404(Website_alert,id=website_alert_id)
+    context = {"website_alert":website_alert}
+    return render(request, 'sitereview/display_website_alert.html', context)     
+
+def list_website_alert(request):
+    sites = Website_alert.objects.all()
+    context = {"sites":sites}
+    context.update({'tab':'all_alerts'})
+    return render(request, 'sitereview/list_website_alert.html', context) 
+
+def create_website_alert(request):
+    if request.method == "POST":
+        # A form has been sent
+        form = CreateForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data['title']
+            url = form.cleaned_data["url"]
+            remark = form.cleaned_data["remark"]
+            w = Website_alert.objects.create(title = title,
+                                         url = url,
+                                         remark = remark,
+                                         deleted = False,
+                                         verify = False,
+                                         site_closed = False)
+            return HttpResponseRedirect(reverse('sitereview:display_website_alert', args=(w.id,)))
+    else:
+        # The user wants to see the form
+        form = CreateForm()
+    context = {'form': form }
+    return render(request, 'sitereview/create_website_alert.html', context)

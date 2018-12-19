@@ -1,0 +1,14 @@
+{% extends "sitereview/base.html" %}
+
+{% block title %} Websites to validate{% endblock %}
+
+
+{% block content %}
+<h1>Those websites have already been validated</h1>
+<p>
+    {% for site in sites %}
+    <a href="{% url 'sitereview:display_website_alert' site.id %}">{{site.title}}</a><br>
+    {% endfor %}   
+</p>
+{% endblock %}
+

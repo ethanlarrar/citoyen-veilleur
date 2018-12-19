@@ -1,0 +1,18 @@
+{% extends "sitereview/base.html" %}
+
+{% block title %} Website list {% endblock %}
+
+
+{% block content %}
+<h1>The list of the bad websites</h1>
+<p>
+    {% for site in sites %}
+    <a href="{% url 'sitereview:display_website_alert' site.id %}">{{site.title}}</a><br>
+    {% endfor %}  
+</p>
+<p>
+    {% if page.has_next %}
+    <a href="{% url 'sitereview:list_website_alert' page.next_page_number %}">{{page.next_page_number}}</a>
+    {% endif %}
+</p>
+{% endblock %}

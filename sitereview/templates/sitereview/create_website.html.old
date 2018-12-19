@@ -1,0 +1,18 @@
+{% extends "sitereview/base.html" %}
+
+{% block title %} Create {% endblock %}
+
+
+{% block content %}
+<h1>Create website alert</h1>
+<form method="post" action="{% url 'sitereview:create_website_alert' %}">
+    {% csrf_token %}
+    <label for="website_title">Title:</label><br>
+    <input type="text" name="website_title" id="website_title"><br>
+    <label for="website_url">Url:</label><br>
+    <input type="text" name="website_url" id="website_url"><br>
+    <label for="website_remark">Remark:</label><br>
+    <textarea name="website_remark" id="website_remark"></textarea><br>
+    <input type="submit" value="Submit">
+</form>
+{% endblock %}

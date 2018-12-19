@@ -1,0 +1,18 @@
+{% extends "sitereview/base.html" %}
+
+{% block title %} Page d'accueil {% endblock %}
+
+{% block content %}
+<h1>Je suis une template</h1>
+{% if user == None %}
+Vous n'etes pas connecte. Veuillez vous connecter ou creer un compte si ce n'ai pas deja fait.
+{% else %}
+Bonjour {{user.username}}, vous etes bien connecte.
+{% endif %}
+
+<ul>
+    {% for carte in cartes %}
+    <li style="color:red;">{{ carte }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
