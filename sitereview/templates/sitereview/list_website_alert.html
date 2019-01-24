@@ -11,8 +11,33 @@
     {% endfor %}  
 </p>
 <p>
-    {% if page.has_next %}
-    <a href="{% url 'sitereview:list_website_alert' page.next_page_number %}">{{page.next_page_number}}</a>
+    
+    {% if page.has_previous %}
+    
+    {% if page.previous_page_number != 1 %}
+    <a href="{% url 'sitereview:list_website_alert' 1 %}">1</a>
+    {% if page.previous_page_number > 2 %}
+    ...
     {% endif %}
+    {% endif %}
+    
+    <a href="{% url 'sitereview:list_website_alert' page.previous_page_number %}">{{page.previous_page_number}}</a>    
+    {% endif %}
+
+    {{page.number}}
+    
+    {% if page.has_next %}    
+    <a href="{% url 'sitereview:list_website_alert' page.next_page_number %}">{{page.next_page_number}}</a>
+
+    {% if page.next_page_number != toutes_les_pages %}
+
+    {% if page.next_page_number != toutes_les_pages|add:"-1" %}
+    ...
+    {% endif %}
+    <a href="{% url 'sitereview:list_website_alert' toutes_les_pages %}">{{toutes_les_pages}}</a>    
+    {% endif %}
+    
+    {% endif %}
+    
 </p>
 {% endblock %}

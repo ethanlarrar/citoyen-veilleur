@@ -1,20 +1,22 @@
 from django.shortcuts import render,get_object_or_404,get_list_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from .models import Question,Website_alert   
+from .models import Question,Website_alert  
 from django.template import loader
 from .forms import CreateForm
 from django.core.exceptions import PermissionDenied
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,permission_required
 from django.core.paginator import Paginator
 
 ## TODO:
 # 1) afficher seulement les sites validés
 # 2) afficher via un système de pagination
+#    - Afficher 1e page, dernière page, page actuelle Precedent 1 ... 2 3 4 ... 15 Suivant
+#    - "externaliser" en le mettant ce dans un fichier exprès pagination.html, via include https://docs.djangoproject.com/fr/2.1/ref/templates/builtins/#include
 # 3) créer une page qui valide un site
 # 4) ajouter une verification pour seuls les personnes dans le groupe validateurs puisse valider le site https://docs.djangoproject.com/fr/2.1/topics/auth/default/.
 # 5) Afficher les boutons pour changer de page.
-
+# 6) Vérifier que l'utilisateur a les bons droits via les permissions pour valider un site + cacher l'onglet dans la liste pour les autres utilisateurs
 
 # Cre=te your views here.
 def index(request):
@@ -58,7 +60,7 @@ def display_website_alert(request,website_alert_id):
 def list_website_alert(request, page=1):    
     sites = Website_alert.objects.all()
     p = Paginator(sites, 3)
-    context = {"sites":p.page(page).object_list, "page":p.page(page)}
+    context = {"sites":p.page(page).object_list, "page":p.page(page),"toutes_les_pages":p.num_pages}
     context.update({'tab':'all_alerts'})
     return render(request, 'sitereview/list_website_alert.html/', context) 
 
@@ -86,9 +88,11 @@ def create_website_alert(request):
     context.update({'tab':'create_alerts'})
     return render(request, 'sitereview/create_website_alert.html', context)
 
+@login_required
+@permission_required('sitereview.can_verify', raise_exception=True)
 def validate_list_website_alert(request):
     sites = Website_alert.objects.filter(verify = False)
-    context = {"sites":sites}
+    context = {"sites":sites, 'user': request.user}
     context.update({'tab':'validate_list'})
     return render(request, 'sitereview/validate_list_website_alert.html', context)
 

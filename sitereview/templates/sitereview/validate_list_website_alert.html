@@ -4,10 +4,15 @@
 
 
 {% block content %}
+{% if perms.sitereview.can_verify %}
+
 <h1>Those websites have to be validated</h1>
 <p>
     {% for site in sites %}
     <a href="{% url 'sitereview:display_website_alert' site.id %}">{{site.title}}</a><br>
     {% endfor %}   
 </p>
+{% else %}
+You have not the requested permissions to validate websites.
+{% endif %}
 {% endblock %}

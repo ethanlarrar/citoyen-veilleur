@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sitereview.apps.SitereviewConfig',
+    'django_registration',
 ]
 
 MIDDLEWARE = [

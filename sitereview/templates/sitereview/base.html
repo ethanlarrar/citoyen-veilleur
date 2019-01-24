@@ -32,7 +32,9 @@
 		    <li class="nav-item dropdown">
 			<a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Alerts</a>
 			<div class="dropdown-menu" aria-labelledby="dropdown01">
+			    {% if perms.sitereview.can_verify %}
 			    <a class="dropdown-item" href="{% url 'sitereview:validate_list_website_alert'%}">To validate</a>
+			    {% endif %}
 			    <a class="dropdown-item" href="{% url 'sitereview:list_verified_website_alert'%}">Verified alerts</a>
 			    <a class="dropdown-item" href="{% url 'sitereview:list_website_alert'%}">All alerts</a>
 			</div>

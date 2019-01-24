@@ -21,3 +21,6 @@ class Website_alert(models.Model):
     date = models.DateTimeField(default=timezone.now)
     verify = models.BooleanField()
     site_closed = models.BooleanField()
+    class Meta:
+        permissions = (("can_verify", "Can verify a website alert"),)
+        
