@@ -12,7 +12,7 @@ class Website_alert(models.Model):
     creator = models.ForeignKey(get_user_model(), on_delete=models.CASCADE,
                                 related_name="creator")
     title = models.CharField(max_length=200)
-    url =  models.URLField(max_length=255)
+    url =  models.URLField(max_length=255, unique=True)
     remark = models.TextField(default="")
     deleted = models.BooleanField(default=False)
     date = models.DateTimeField(default=timezone.now)
@@ -21,8 +21,8 @@ class Website_alert(models.Model):
     hour_video = models.PositiveIntegerField(default=0)
     minute_video = models.PositiveIntegerField(default=0)
     second_video = models.PositiveIntegerField(default=0)
-    main_quotes = models.TextField(default="")
-    #liste de question sous forme de formulaires
+    main_quotes = models.TextField(default="", blank=True)
+    #liste de question sous forme de formulaire
     antisem_france = models.BooleanField(default=False)
     antisem_abroad = models.BooleanField(default=False)
     antisionisme_france = models.BooleanField(default=False)
@@ -36,7 +36,7 @@ class Website_alert(models.Model):
     legal_proceeding = models.BooleanField(default=False)
     only_alert = models.BooleanField(default=False)
     bad_user = models.BooleanField(default=False)
-    extern_pseudo = models.CharField(max_length=200, default="")
+    extern_pseudo = models.CharField(max_length=200, default="", blank=True)
     # https://docs.djangoproject.com/fr/2.1/topics/db/models/, cf through
     voted_by = models.ManyToManyField(get_user_model(), through="Vote", related_name="voted_by") 
     class Meta:

@@ -1,5 +1,5 @@
 from django.shortcuts import render,get_object_or_404,get_list_or_404
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from .models import Website_alert  
 from django.template import loader
@@ -11,7 +11,6 @@ from django.core.paginator import Paginator
 ## TODO:
 # 1) afficher seulement les sites validés
 # 2) afficher via un système de pagination
-#    - Afficher 1e page, dernière page, page actuelle Precedent 1 ... 2 3 4 ... 15 Suivant
 #    - "externaliser" en le mettant ce dans un fichier exprès pagination.html, via include https://docs.djangoproject.com/fr/2.1/ref/templates/builtins/#include
 # 3) créer une page qui valide un site
 # 4) ajouter une verification pour seuls les personnes dans le groupe validateurs puisse valider le site https://docs.djangoproject.com/fr/2.1/topics/auth/default/.
@@ -58,11 +57,15 @@ def display_website_alert(request,website_alert_id):
     return render(request, 'sitereview/display_website_alert.html', context)     
 
 def list_website_alert(request, page=1):    
-    sites = Website_alert.objects.all()
+    sites = Website_alert.objects.all().order_by('-date')
     p = Paginator(sites, 3)
     context = {"sites":p.page(page).object_list, "page":p.page(page),"toutes_les_pages":p.num_pages}
     context.update({'tab':'all_alerts'})
-    return render(request, 'sitereview/list_website_alert.html/', context) 
+    return render(request, 'sitereview/list_website_alert.html/', context)
+
+#def check_if_it_exists(request):
+    
+
 
 #Méthode 2
 @login_required
@@ -75,9 +78,7 @@ def create_website_alert(request):
         form = CreateForm(request.POST)
         if form.is_valid():
             new_website = form.save(commit=False)
-            new_website.deleted = False
-            new_website.verify = False
-            new_website.site_closed = False
+            new_website.creator = request.user
             new_website.save()
             # new_website.save_m2m()
             return HttpResponseRedirect(reverse('sitereview:display_website_alert', args=(new_website.id,)))
@@ -97,7 +98,14 @@ def validate_list_website_alert(request):
     return render(request, 'sitereview/validate_list_website_alert.html', context)
 
 def list_verified_website_alert(request):
-    sites = Website_alert.objects.filter(verify = True)
+    sites = Website_alert.objects.filter(verify = True).order_by('-date')
     context = {"sites":sites}
     context.update({'tab':'list_verified_website_alert'})
     return render(request, 'sitereview/list_verified_website_alert.html', context)
+
+def website_exists(request, url):
+    sites = Website_alert.objects.filter(url = url)
+    if sites:
+        return JsonResponse({'exists': True, 'url': url})
+    else:
+        return JsonResponse({'exists': False, 'url': url})

@@ -10,7 +10,36 @@ class CreateFormOld(forms.Form):
 
 # https://docs.djangoproject.com/en/2.1/topics/forms/modelforms/
 # Method 2
+
 class CreateForm(forms.ModelForm):
     class Meta:
         model = Website_alert
-        fields = ['title','url','remark']
+        fields = [
+            #'creator'
+            'title',
+            'url',
+            'remark',
+            #'deleted',
+            #'date',
+            #'verify',
+            #'site_closed',
+            'hour_video',
+            'minute_video',
+            'second_video',
+            'main_quotes',
+            'antisem_france',
+            'antisem_abroad',
+            'antisionisme_france',
+            'antisionisme_abroad',
+            'video',
+            'article',
+            'social_network',
+            'comments',
+            'regular_website',
+            'official_hater_website',
+            'legal_proceeding',
+            'only_alert',
+            'bad_user',
+            'extern_pseudo',
+            #'voted_by',
+        ]

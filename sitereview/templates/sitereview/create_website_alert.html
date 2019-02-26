@@ -10,4 +10,28 @@
     {{ form.as_p }}
     <input type="submit" value="Submit">
 </form>
+
+<script>
+ $( document ).ready(function() { // Lambda-fonctions, fonctions anonymes
+     $("#id_url").on("input", function(){
+ 	 url = $("#id_url").val()
+ 	 //alert("Vous avez tapé: " + url);
+ 	 // url 'sitereview:website_exists' ""
+ 	 $.getJSON("../website_exists/" + url , function(data){
+ 	     // alert("json chargé" + data['exists']);
+	     $('#id_url').nextAll('span').remove();
+	     if (data['exists']){
+		 $("#id_url")[0].setCustomValidity("url already exists")
+		 $('#id_url').after('<span id="after_url">This url already exists</span>');
+	     }
+	     else{
+		 $("#id_url")[0].setCustomValidity("")
+	     }
+ 	 });
+     });
+ });
+ 
+ 
+</script>
+
 {% endblock %}
