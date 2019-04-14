@@ -10,11 +10,22 @@
 <p>This website has been closed recently.</p>
 {% endif %}
 <p>
+    {{website_alert.number_votes}} user(s) have voted for this website
+    and the average grade is: {{website_alert.average_grade}}
+</p>
+<p>
     {{website_alert.remark}}
 </p>
 
 <p><a href="{{website_alert.url}}">{{website_alert.url}}</a><br>
     {{website_alert.date}}
 </p>
+{% if request.user.is_anonymous is not True %}
+<form method="post" action=".">
+    {% csrf_token %}
+    {{ form_vote.as_p }}
+    <input type="submit" value="Submit">
+</form>
+{% endif %}
 {% endblock %}
 

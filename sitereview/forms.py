@@ -1,5 +1,5 @@
 from django import forms
-from .models import Website_alert
+from .models import Website_alert, Vote
 
 # https://docs.djangoproject.com/en/2.1/topics/forms/
 # Method 1
@@ -43,3 +43,11 @@ class CreateForm(forms.ModelForm):
             'extern_pseudo',
             #'voted_by',
         ]
+
+class VoteForm(forms.ModelForm):
+    class Meta:
+        model = Vote
+        fields = [
+            'grade'
+        ]
+

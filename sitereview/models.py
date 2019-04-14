@@ -38,19 +38,37 @@ class Website_alert(models.Model):
     bad_user = models.BooleanField(default=False)
     extern_pseudo = models.CharField(max_length=200, default="", blank=True)
     # https://docs.djangoproject.com/fr/2.1/topics/db/models/, cf through
-    voted_by = models.ManyToManyField(get_user_model(), through="Vote", related_name="voted_by") 
+    voted_by = models.ManyToManyField(get_user_model(), through="Vote", related_name="voted_by")
+    
+    def number_votes(self):
+        return self.vote_set.all().count()
+
+    def average_grade(self):
+        k = 0
+        number = 0
+        for vote in self.vote_set.all():
+            i = vote.grade
+            k = k + i
+            number += 1
+        try: # Or possible to use if
+            return k/number
+        except ZeroDivisionError:
+            return 0
     class Meta:
         permissions = (("can_verify", "Can verify a website alert"),)
+            
+    
 
 class Vote(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(),
+                             on_delete=models.CASCADE)
     website_alert = models.ForeignKey(Website_alert, on_delete=models.CASCADE)
     grade = models.IntegerField(default=1,                              
                                 validators=[
                                     MaxValueValidator(5),
                                     MinValueValidator(0)
                                 ])
-    date = models.DateTimeField(default=timezone.now)
+    date = models.DateTimeField(default=timezone.now)    
     
         
 class ParamUser(models.Model):

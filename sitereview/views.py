@@ -1,17 +1,18 @@
 from django.shortcuts import render,get_object_or_404,get_list_or_404
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, HttpResponseForbidden
 from django.urls import reverse
-from .models import Website_alert  
+from .models import Website_alert, Vote  
 from django.template import loader
-from .forms import CreateForm
+from .forms import CreateForm, VoteForm
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required,permission_required
 from django.core.paginator import Paginator
+import base64
 
 ## TODO:
 # 1) afficher seulement les sites validés
 # 2) afficher via un système de pagination
-#    - "externaliser" en le mettant ce dans un fichier exprès pagination.html, via include https://docs.djangoproject.com/fr/2.1/ref/templates/builtins/#include
+#    - "externaliser" en le mettant ce dans un fichier exprès fpagination.html, via include https://docs.djangoproject.com/fr/2.1/ref/templates/builtins/#include
 # 3) créer une page qui valide un site
 # 4) ajouter une verification pour seuls les personnes dans le groupe validateurs puisse valider le site https://docs.djangoproject.com/fr/2.1/topics/auth/default/.
 # 5) Afficher les boutons pour changer de page.
@@ -53,8 +54,23 @@ def afficher_questions(request):
 def display_website_alert(request,website_alert_id):
     ## get_list_or_404 pour une liste 
     website_alert = get_object_or_404(Website_alert,id=website_alert_id)
-    context = {"website_alert":website_alert}
-    return render(request, 'sitereview/display_website_alert.html', context)     
+    if request.method == "POST":        
+        form_vote = VoteForm(request.POST)
+        if form_vote.is_valid():
+            if request.user.is_anonymous or website_alert.voted_by.filter(username = request.user.username):
+                return HttpResponseForbidden()
+            else:
+                new_vote = form_vote.save(commit=False)
+                new_vote.user = request.user
+                new_vote.website_alert = website_alert
+                new_vote.save()
+                return HttpResponseRedirect(reverse('sitereview:display_website_alert', args=(website_alert_id,)))
+    else:
+        form_vote = VoteForm()
+    
+    context = {"website_alert":website_alert, "form_vote":form_vote}    
+    
+    return render(request, 'sitereview/display_website_alert.html', context)
 
 def list_website_alert(request, page=1):    
     sites = Website_alert.objects.all().order_by('-date')
@@ -76,16 +92,22 @@ def create_website_alert(request):
     if request.method == "POST":        
         # A form has been sent
         form = CreateForm(request.POST)
-        if form.is_valid():
+        form_vote = VoteForm(request.POST)
+        if form.is_valid() and form_vote.is_valid():
             new_website = form.save(commit=False)
             new_website.creator = request.user
             new_website.save()
+            new_vote = form_vote.save(commit=False)
+            new_vote.user = request.user
+            new_vote.website_alert = new_website
+            new_vote.save()
             # new_website.save_m2m()
             return HttpResponseRedirect(reverse('sitereview:display_website_alert', args=(new_website.id,)))
     else:
         # The user wants to see the form
         form = CreateForm()
-    context = {'form': form }
+        form_vote = VoteForm()
+    context = {'form': form,'form_vote': form_vote }
     context.update({'tab':'create_alerts'})
     return render(request, 'sitereview/create_website_alert.html', context)
 
@@ -103,9 +125,19 @@ def list_verified_website_alert(request):
     context.update({'tab':'list_verified_website_alert'})
     return render(request, 'sitereview/list_verified_website_alert.html', context)
 
-def website_exists(request, url):
-    sites = Website_alert.objects.filter(url = url)
-    if sites:
+def website_exists(request, url_b64):
+    print(url_b64)
+    try:
+        url = base64.b64decode(url_b64).decode("utf-8")
+    except:
+        url = ""
+    print(url)
+    sites = Website_alert.objects.filter(url = url) # le premier url se réfère au nom du champ (colonne) dans la base de donnée, le deuxième url se réfère à la variable définie juste avant
+    if sites: # Sert à vérifier si 'sites' n'est pas vide, comme if len(sites) > 0
         return JsonResponse({'exists': True, 'url': url})
     else:
         return JsonResponse({'exists': False, 'url': url})
+
+    
+
+

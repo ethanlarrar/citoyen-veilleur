@@ -8,6 +8,7 @@
 <form method="post" action="{% url 'sitereview:create_website_alert' %}">
     {% csrf_token %}
     {{ form.as_p }}
+    {{ form_vote.as_p }}
     <input type="submit" value="Submit">
 </form>
 
@@ -17,7 +18,8 @@
  	 url = $("#id_url").val()
  	 //alert("Vous avez tapé: " + url);
  	 // url 'sitereview:website_exists' ""
- 	 $.getJSON("../website_exists/" + url , function(data){
+	 // alert(window.btoa(url))
+ 	 $.getJSON("../website_exists/" + window.btoa(url) , function(data){
  	     // alert("json chargé" + data['exists']);
 	     $('#id_url').nextAll('span').remove();
 	     if (data['exists']){
@@ -30,8 +32,8 @@
  	 });
      });
  });
- 
- 
+     
+     
 </script>
 
 {% endblock %}
