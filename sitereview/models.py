@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
 # Pensez a verifier que les validateurs fonctionnent avec les choices
@@ -11,7 +12,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 class Website_alert(models.Model):
     creator = models.ForeignKey(get_user_model(), on_delete=models.CASCADE,
                                 related_name="creator")
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200,
+                             verbose_name=_("title"))
     url =  models.URLField(max_length=255, unique=True)
     remark = models.TextField(default="")
     deleted = models.BooleanField(default=False)
@@ -38,7 +40,7 @@ class Website_alert(models.Model):
     bad_user = models.BooleanField(default=False)
     extern_pseudo = models.CharField(max_length=200, default="", blank=True)
     # https://docs.djangoproject.com/fr/2.1/topics/db/models/, cf through
-    voted_by = models.ManyToManyField(get_user_model(), through="Vote", related_name="voted_by")
+    voted_by = models.ManyToManyField(get_user_model(), through="Vote", related_name="website_alerts")
     
     def number_votes(self):
         return self.vote_set.all().count()
@@ -69,7 +71,8 @@ class Vote(models.Model):
                                     MinValueValidator(0)
                                 ])
     date = models.DateTimeField(default=timezone.now)    
-    
+    class Meta:
+        unique_together = ('website_alert', 'user',)  
         
 class ParamUser(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
@@ -85,5 +88,6 @@ class ParamUser(models.Model):
         # else:
         #     return False
         return self.points < -500
-    
+
+  
         

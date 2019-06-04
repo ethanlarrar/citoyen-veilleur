@@ -1,0 +1,68 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-05-29 18:26+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: models.py:16
+msgid "title"
+msgstr "titre"
+
+#: templates/sitereview/index.html:4
+msgid "Home"
+msgstr "Accueil"
+
+#: templates/sitereview/index.html:7
+msgid "Welcome to the Citoyen-veilleur website"
+msgstr "Bienvenue sur le site du Citoyen-veilleur"
+
+#: templates/sitereview/index.html:10
+msgid "You are not connected. Please log in or sign in."
+msgstr ""
+"Vous n'êtes pas connecté. Veuillez vous connecter ou créer un compte si ce "
+"n'est pas déja fait."
+
+#: templates/sitereview/index.html:12
+#, python-format
+msgid "Hello %(username)s, you are connected."
+msgstr "Bonjour %(username)s, vous êtes bien connecté."
+
+#: templates/sitereview/index.html:15
+msgctxt "month name"
+msgid "May"
+msgstr "Mai"
+
+#: templates/sitereview/list_website_alert.html:10
+#, python-format
+msgid "There is %(nb_alerts)s alert."
+msgid_plural "There are %(nb_alerts)s alerts."
+msgstr[0] "Il y a %(nb_alerts)s alerte."
+msgstr[1] "Il y a %(nb_alerts)s alertes."
+
+#: views.py:38
+msgid "Good bye!"
+msgstr "Au revoir!"
+
+#: views.py:39
+msgid "Parrot"
+msgstr "Perroquet"
+
+#: views.py:42
+msgid "There is %(n_parrots)d parrot"
+msgid_plural "There are %(n_parrots)d parrots"
+msgstr[0] "Il y a %(n_parrots)d perroquet."
+msgstr[1] "Il y a %(n_parrots)d perroquets."

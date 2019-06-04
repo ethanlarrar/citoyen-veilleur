@@ -1,0 +1,9 @@
+{% extends 'sitereview/base.html' %}
+
+{% block title %} Error {% endblock %}
+
+{% block content %}
+<h1>You are not allowed to vote</h1>
+<p>You have already voted for this website alert or you are not connected to your account.</p>
+<a href="{% url 'sitereview:list_website_alert' %}"> Return to the list </a>
+{% endblock %}

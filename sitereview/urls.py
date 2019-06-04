@@ -1,6 +1,6 @@
 from django.urls import path
-
 from . import views
+from django.views.generic import TemplateView
 
 app_name = 'sitereview'
 urlpatterns = [
@@ -15,5 +15,6 @@ urlpatterns = [
     path('validate_list_website_alert/',views.validate_list_website_alert, name='validate_list_website_alert'),
     path('list_verified_website_alert/',views.list_verified_website_alert, name='list_verified_website_alert'),
     path('website_exists/<path:url_b64>',views.website_exists, name='website_exists'),
+    path('already_voted/', TemplateView.as_view(template_name="sitereview/already_voted.html"),name='already_voted' ),
 ]
 

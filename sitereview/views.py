@@ -8,6 +8,7 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required,permission_required
 from django.core.paginator import Paginator
 import base64
+from django.utils.translation import gettext as _, ngettext
 
 ## TODO:
 # 1) afficher seulement les sites validés
@@ -17,6 +18,7 @@ import base64
 # 4) ajouter une verification pour seuls les personnes dans le groupe validateurs puisse valider le site https://docs.djangoproject.com/fr/2.1/topics/auth/default/.
 # 5) Afficher les boutons pour changer de page.
 # 6) Vérifier que l'utilisateur a les bons droits via les permissions pour valider un site + cacher l'onglet dans la liste pour les autres utilisateurs
+# 7) Utilistaeurs ayant déjà voté met à jour le vote au lieu de renvoyer une erreur
 
 # Cre=te your views here.
 def index(request):
@@ -33,7 +35,16 @@ def index(request):
     return render(request, 'sitereview/index.html', context)
 
 def au_revoir(request):
-    return HttpResponse("Au revoir!")
+    message = _("Good bye!")
+    animal = _("Parrot")
+    n_parrots = 4
+    phrase = ngettext(
+        'There is %(n_parrots)d parrot',
+        'There are %(n_parrots)d parrots',
+    n_parrots) % {
+        'n_parrots': n_parrots,
+    }
+    return HttpResponse(message + animal + phrase)
 
 def detail(request,question_id):
     ## Premier temps: utiliser des templates ici
@@ -57,8 +68,13 @@ def display_website_alert(request,website_alert_id):
     if request.method == "POST":        
         form_vote = VoteForm(request.POST)
         if form_vote.is_valid():
-            if request.user.is_anonymous or website_alert.voted_by.filter(username = request.user.username):
-                return HttpResponseForbidden()
+            if request.user.is_anonymous:
+                return HttpResponseRedirect(reverse('sitereview:already_voted'))
+            elif  website_alert.voted_by.filter(username = request.user.username):
+                vote = request.user.vote_set.get(website_alert = website_alert)
+                vote.grade = form_vote.cleaned_data['grade']
+                vote.save()
+                return HttpResponseRedirect(reverse('sitereview:display_website_alert', args=(website_alert_id,)))
             else:
                 new_vote = form_vote.save(commit=False)
                 new_vote.user = request.user
@@ -74,8 +90,9 @@ def display_website_alert(request,website_alert_id):
 
 def list_website_alert(request, page=1):    
     sites = Website_alert.objects.all().order_by('-date')
+    nb_alerts = sites.count()
     p = Paginator(sites, 3)
-    context = {"sites":p.page(page).object_list, "page":p.page(page),"toutes_les_pages":p.num_pages}
+    context = {"sites":p.page(page).object_list, "page":p.page(page),"toutes_les_pages":p.num_pages, "nb_alerts":nb_alerts}
     context.update({'tab':'all_alerts'})
     return render(request, 'sitereview/list_website_alert.html/', context)
 

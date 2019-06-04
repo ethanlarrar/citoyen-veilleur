@@ -1,10 +1,18 @@
 {% extends "sitereview/base.html" %}
+{% load i18n %}
 
 {% block title %} Website list {% endblock %}
 
 
 {% block content %}
 <h1>The list of the bad websites</h1>
+<p>
+    {% blocktrans trimmed count nb_alerts=nb_alerts %}
+    There is {{nb_alerts}} alert.
+    {% plural %}
+    There are {{nb_alerts}} alerts.
+    {% endblocktrans %}
+</p>
 <p>
     {% for site in sites %}
     <a href="{% url 'sitereview:display_website_alert' site.id %}">{{site.title}}</a><br>

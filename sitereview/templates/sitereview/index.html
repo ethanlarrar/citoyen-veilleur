@@ -1,18 +1,18 @@
 {% extends "sitereview/base.html" %}
+{% load i18n %}
 
-{% block title %} Page d'accueil {% endblock %}
+{% block title %} {% trans "Home" %} {% endblock %}
 
 {% block content %}
-<h1>Je suis une template</h1>
+<h1>{% blocktrans trimmed %} Welcome to the Citoyen-veilleur website {% endblocktrans %}</h1>
+
 {% if user == None %}
-Vous n'etes pas connecte. Veuillez vous connecter ou creer un compte si ce n'ai pas deja fait.
+{% blocktrans trimmed %}You are not connected. Please log in or sign in.{% endblocktrans %}
 {% else %}
-Bonjour {{user.username}}, vous etes bien connecte.
+{% blocktrans trimmed with username=user.username %} Hello {{username}}, you are connected.{% endblocktrans %}
 {% endif %}
 
-<ul>
-    {% for carte in cartes %}
-    <li style="color:red;">{{ carte }}</li>
-    {% endfor %}
-</ul>
+{% trans "May" context "month name" %}
+
+
 {% endblock %}
