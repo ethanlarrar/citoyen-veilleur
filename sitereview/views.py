@@ -31,6 +31,7 @@ def index(request):
     ## Pour y acceder en python: context['age_utilisateur']
     # return HttpResponse(template.render(context, request))
     ## Méthode 2 (condensée)
+    context.update({'remove_main_div': True})
     context.update({'tab':'home'})
     return render(request, 'sitereview/index.html', context)
 

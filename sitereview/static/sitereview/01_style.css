@@ -1,0 +1,297 @@
+body {
+    scrollbar-face-color: #d9d9d9;
+    scrollbar-track-color: transparent;
+    font: 14px/16px Roboto,sans-serif;
+    color: #666;
+    background-color: #F0F3F4;
+    padding-bottom: 40px;
+}
+
+body a {
+    color: #209e91;
+    -webkit-transition: color .2s ease;
+    transition: color .2s ease;
+}
+
+body a:hover {
+    color: #1b867b;
+}
+
+body a:focus {
+    outline: 0;
+}
+
+.feather {
+    width: 16px;
+    height: 16px;
+    vertical-align: text-bottom;
+}
+
+/*
+ * Sidebar
+ */
+
+.sidebar {
+    z-index: 100; /* Behind the navbar */
+    background-color: #1C2B36;
+    color: white;
+    height: 100%;
+}
+
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        /* margin-top: 66px; */
+        justify-content: around;
+        /* flex-direction: column; */
+    }
+
+    .sidebar sidebar-sticky ul {
+        justify-content: around;
+    }
+}
+
+@media (min-width: 768px) {
+    .sidebar {
+        /* width: 180px; */
+        top: 66px;
+        left: 0;
+        bottom: 0;
+        display: block;
+        min-height: 100%;
+        position: fixed;
+        /* Make sure the tab is always visible even if reduced in small mode size */
+        display: block !important;
+    }
+
+    /* Trick: reverse meaning of show to display by default */
+    /* only on device. */
+    /* All collapsable blocks must have a "collapse" attached, */
+    /* and then to show a block, you must also add the "show" */
+    /* class. Then, bootstrap uses a line: */
+    /* .collapse:not(.show) {display: none} */
+    /* to hide whenever a "collapse" class does not have a "show" */
+    /* associated. To show only on big screens, we remove all */
+    /* "show", and we revert the meaning of show!  */
+    .sidebar-text:not(.show) {
+        display: inline-block !important;
+    }
+
+    .sidebar-bloc:not(.show), .phantom-left .sidebar-text:not(.show) {
+        display: block !important;
+    }
+
+    .sidebar-text.show, .sidebar-bloc.show {
+        display: none !important;
+    }
+
+    .sidebar-text {
+        display: inline-block;
+        width: 125px;
+    }
+}
+
+@media (min-width: 768px) {
+    .sidebar-sticky {
+        position: relative;
+        top: 0;
+        height: calc(100vh - 48px);
+        padding-top: .5rem;
+        overflow-x: hidden;
+        overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+    }
+}
+
+@supports ((position: -webkit-sticky) or (position: sticky)) {
+    .sidebar-sticky {
+        position: -webkit-sticky;
+        position: sticky;
+    }
+}
+
+.sidebar .nav-link {
+    color: white;
+    display: block;
+    height: 42px;
+    padding-left: 18px;
+    padding-right: 10px;
+    font-size: 13px;
+    text-decoration: none;
+    line-height: 25px;
+    cursor: pointer;
+}
+
+.sidebar .nav-link.active {
+    background-color: #209e91;
+}
+
+.sidebar .nav-link:hover
+{
+	color: #209e91;
+}
+
+.sidebar .nav-link.active:hover
+{
+	color: white;
+}
+
+.sidebar .nav-item i {
+    /* display: block; */
+    float: right;
+    opacity: 1;
+    width: 14px;
+    height: 14px;
+    /* line-height: 7px; */
+    text-shadow: none;
+    font-size: 18px;
+    /* position: absolute; */
+    /* right: 10px; */
+    /* top: 12px; */
+    /* padding: 0; */
+    text-align: center;
+    -webkit-transition: -webkit-transform .2s linear;
+    transition: -webkit-transform .2s linear;
+    transition: transform .2s linear;
+    transition: transform .2s linear,-webkit-transform .2s linear;
+}
+
+
+/*
+ * Sidebar: sublists
+ */
+
+.sidebar .nav-item ul li a {
+    line-height: 1em;
+    height: unset;
+}
+
+/*
+ * Content
+ */
+
+.maincontainer {
+    margin-top: 66px;
+}
+
+[role="main"] {
+    font-size: 16px;
+}
+
+@media (min-width: 768px) {
+    [role="main"] {
+        /* margin-left: 190px; */
+        /* padding-top: 66px; /\* Space for fixed navbar *\/ */
+    }
+}
+
+.phantom-left {
+    margin-right: 0px;
+    margin-left: 60px;
+}
+
+.phantom-left .sidebar-text {
+    width: 132px;
+}
+
+.card-title .icon {
+    font-size: 23px;
+}
+
+/*
+ * Navbar
+ */
+
+
+@media (max-width: 576px) {
+    .navbar {
+        position: absolute;
+    }
+}
+
+.navbar {
+    background-color: #1C2B36;
+    height: 66px;
+    padding: 0 32px 0 40px;
+}
+
+.navbar-brand {
+    color: #fff;
+    display: block;
+    font-size: 24px;
+    font-family: Roboto,sans-serif;
+    white-space: nowrap;
+    /* float: left; */
+    line-height: 10px;
+}
+
+.navbar-brand a:hover {
+    color: #1b867b;
+}
+
+.navbar-brand span {
+    color: #209e91;
+}
+
+/* Remove default aspect of buttons */
+.mynavbar-toggler {
+    border: 0;
+    font-family: inherit;
+    font-size: 100%;
+    font-family: inherit;
+    background: none;
+}
+
+.mynavbar-toggler span.icon {
+    color: white;
+    font-size: 26px;
+    cursor: pointer;
+    display: block;
+    text-decoration: none;
+    color: #fff;
+    padding: 0;
+    margin-left: 11px;
+    margin-right: 17px;
+}
+
+
+.mynavbar-toggler span.icon:hover {
+    color: #dfb81c;
+}
+
+.navbar form button {
+    background: none;
+}
+
+.navbar form button i {
+    width: 16px;
+    display: inline-block;
+    cursor: pointer;
+    padding-left: 1px;
+    font-size: 16px;
+    margin-right: 13px;
+    color: white;
+}
+
+.navbar form input {
+    color: white;
+    font-size: 10pt;
+}
+
+.navbar .form-control {
+    padding: .75rem 1rem;
+    border-width: 0;
+    border-radius: 0;
+}
+
+.navbar {
+    color: #eee;
+}
+
+.navbar .dropdown {
+    color: white;
+}
+
+a.navbar-brand:hover {
+    color: #1b867b !important;   
+}

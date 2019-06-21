@@ -1,78 +1,340 @@
 <!doctype html>
+<!-- TODO:
+   - https://simpleisbetterthancomplex.com/tutorial/2018/08/13/how-to-use-bootstrap-4-forms-with-django.html
+   - favicon
+-->
+
 <html lang="en">
     <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="description" content="">
 	<meta name="author" content="">
-	<link rel="icon" href="../../../../favicon.ico">
+	<link rel="icon" href="/static/favicon.ico">
 
-	<title>Sitereview - {% block title %}{% endblock %}</title>
+	<title>CitoyenVeilleur - {% block title %}{% endblock %}</title>
 
-	<!-- Bootstrap core CSS -->
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <!-- <link rel="stylesheet" href="bootstrap.min.css"> -->
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
-	<!-- Custom styles for this template -->
-	<!-- <link href="jumbotron.css" rel="stylesheet"> -->
+
+        <!-- https://ionicons.com/ -->
+        <link href="https://unpkg.com/ionicons@4.5.9-1/dist/css/ionicons.min.css" rel="stylesheet">
+        <!-- <link href="open-iconic-bootstrap.css" rel="stylesheet"> -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.3.0/css/flag-icon.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        
+        <!-- Font -->
+        <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900italic,900&subset=latin,greek,greek-ext,vietnamese,cyrillic-ext,latin-ext,cyrillic' rel='stylesheet' type='text/css'>
+        <!-- <link href='roboto.css' rel='stylesheet' type='text/css'> -->
+
+        <link rel="stylesheet" href="/static/sitereview/01_style.css">
+
     </head>
+    <body>
 
-    <body style="padding-top: 3.5rem;">
+        <!-- ############### Header navbar ############### -->
+        <nav class="navbar navbar-dark fixed-top flex-md-nowrap shadow clearfix flex-row justify-content-center justify-content-sm-start p-0 px-sm-3 mx-auto m-sm-0">
+            <!-- ### Brand -->
+            <a class="navbar-brand p-0" href="{% url 'sitereview:index' %}"><span>Citoyen</span>Veilleur</a>
+            <!-- ### Toggler sandwitch -->
+            <button class="mynavbar-toggler p-0 m-sm-0" data-toggle="collapse" data-target=".sidebar,.sidebar-text,.sidebar-bloc" aria-controls="hidesidebarbigscreensidebartocollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="icon ion-md-menu"></span>
+            </button>
+            <!-- ### Search form -->
+            <form class="form-inline my-2 my-lg-0 text-nowrap d-sm-none d-none d-md-block">
+                <button type="submit" class="border-0">
+                    <i class="icon ion-ios-search m-1"></i>
+                </button>
+                <input class="border-0 bg-transparent mr-auto ml-sm-0 p-0" type="search" placeholder="Search for..." aria-label="Search">
+            </form>
+            <!-- ### Separator to flush right -->
+            <span class="mr-sm-auto"></span>
+            <!-- ### Right part: lang, register, login -->
+            <ul class="nav justify-content-center float-left">
+                <!-- ### Language choice -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="flag-icon flag-icon-us"></span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="/en"><span class="flag-icon flag-icon-gb"></span> English</a>
+                        <a class="dropdown-item" href="/fr"><span class="flag-icon flag-icon-fr"></span> Français</a>
+                        <a class="dropdown-item" href="/il"><span class="flag-icon flag-icon-il"></span> עִבְרִית</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'django_registration_register' %}">Register</a>
+                </li>
+                <li class="nav-item">
+	            {% if user.is_authenticated %}
+	                <a class="nav-link" href="{% url 'logout' %}">Logout ({{ user.username }})<span class="sr-only">(current)</span></a>
+	            {% else %}
+	                <a class="nav-link" href="{% url 'login' %}">Login<span class="sr-only">(current)</span></a>
+	            {% endif %}		    		    
+                </li>
+            </ul>
+        </nav>
+        <div class="maincontainer container-fluid clearfix p-0">
+            <div class="d-flex flex-column flex-md-row justify-content-start">
+                <!-- ############### Left menu ############### -->
+                <nav class="sidebar collapse px-0 py-2">
+                    <div class="sidebar-sticky" role="navigation"  id="sidebartocollapse">
+                        <ul class="nav nav-dark flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link {% if tab == 'home' %}active{% endif %}" href="{% url 'sitereview:index' %}">
+                                    <span class="icon ion-md-home pr-3"></span>
+                                    <span class="sidebar-text collapse">Home</span> {% if tab == 'home' %}<span class="sr-only">(current)</span>{% endif %}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">
+                                    <span class="icon ion-md-map pr-3"></span>
+                                    <span class="sidebar-text collapse">Presentation</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'sitereview:list_verified_website_alert'%}">
+                                    <span class="icon ion-md-megaphone pr-3"></span>
+                                    <span class="sidebar-text collapse">Alerts</span>
+                                </a>
+                            </li>
+                            <li class="nav-item  {% if tab == 'create_alerts' %}active{% endif %}">
+                                <a class="nav-link" href="#" role="button" data-toggle="mycollapse-next" aria-expanded="true" aria-controls="collapseOne">
+                                    <span class="icon ion-md-compass pr-3"></span>
+                                    <span class="sidebar-text collapse">Get involved 
+                                    <i class="fa fa-angle-down"></i></span>
+                                </a>
+                                <div class="sidebar-bloc collapse" id="monidcool">
+                                    <ul class="ml-md-4 nav flex-nowrap flex-column collapse">
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{% url 'sitereview:create_website_alert' %}">
+                                                Report websites
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{% url 'sitereview:list_website_alert' %}">
+                                                All alerts
+                                            </a>
+                                        </li>
+                                        {% if perms.sitereview.can_verify %}
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{% url 'sitereview:validate_list_website_alert'%}">
+                                                Moderate
+                                            </a>
+                                        </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">
+                                    <span class="icon ion-md-paper-plane pr-3"></span>
+                                    <span class="sidebar-text collapse">Contact</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
 
-	<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-	    <a class="navbar-brand" href="">SiteReview</a>
-	    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-		<span class="navbar-toggler-icon"></span>
-	    </button>
+                <!-- Fantom box, usefull to push
+                     the main box when needed -->
+                <div class="phantom-left p-0 d-none d-md-block">
+                        <div class="sidebar-text m-0 p-0 collapse"></div>
+                </div>
+                
+                <main role="main" class="px-1 px-sm-3 px-md-4 w-100">
+                    {% if remove_main_div is not True %}
+                    <div class="w-100 d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-1 pb-1 mt-3 mb-2">
+                        <div class="w-100 rounded p-3 shadow bg-white">
+                            {% endif %}
+                            {% block content %}{% endblock %}
+                            {% if remove_main_div is not True %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    <!-- <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-1 pb-1 mb-2"> -->
+                        <!-- <h1 class="h2">List of alerts</h1> -->
+                    <!-- <i>List of alerts</i> -->
+                    <!-- <nav aria-label="breadcrumb"> -->
+                    <!-- <ol class="breadcrumb bg-transparent"> -->
+                    <!-- <li class="breadcrumb-item"><a href="#">Home</a></li> -->
+                    <!-- <li class="breadcrumb-item"><a href="#">Library</a></li> -->
+                    <!-- <li class="breadcrumb-item active" aria-current="page">Data</li> -->
+                    <!-- </ol> -->
+                            <!-- </nav> -->
+                    <!-- </div> -->
+                    <!-- <div class="w-100 rounded p-3 shadow bg-white"> -->
+                    <!-- <h2>List of alerts</h2> -->
+                    <!-- Here are all the alerts! -->
+                    <!-- </div> -->
 
-	    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-		<ul class="navbar-nav mr-auto">
-		    <li class="nav-item {% if tab == 'home' %}active{% endif %}">
-			<a class="nav-link" href="{% url 'sitereview:index' %}">Home<span class="sr-only">(current)</span></a>
-		    </li>
-		    <li class="nav-item dropdown">
-			<a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Alerts</a>
-			<div class="dropdown-menu" aria-labelledby="dropdown01">
-			    {% if perms.sitereview.can_verify %}
-			    <a class="dropdown-item" href="{% url 'sitereview:validate_list_website_alert'%}">To validate</a>
-			    {% endif %}
-			    <a class="dropdown-item" href="{% url 'sitereview:list_verified_website_alert'%}">Verified alerts</a>
-			    <a class="dropdown-item" href="{% url 'sitereview:list_website_alert'%}">All alerts</a>
-			</div>
-		    </li>
-		    <li class="nav-item {% if tab == 'create_alerts' %}active{% endif %}">
-			<a class="nav-link" href="{% url 'sitereview:create_website_alert' %}">Create alerts<span class="sr-only">(current)</span></a>
-		    </li>		   
-	</li>
-	{% if user.is_authenticated %}
-	<li class="nav-item">
-	    <a class="nav-link" href="{% url 'logout' %}">Logout<span class="sr-only">(current)</span></a>
-	</li>
-	{% else %}
-	<li class="nav-item">
-	    <a class="nav-link" href="{% url 'login' %}">Login<span class="sr-only">(current)</span></a>
-	</li>
-	{% endif %}		    		    
-		</ul>
-		<form class="form-inline my-2 my-lg-0">
-		    <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-		    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-		</form>
-	    </div>
-	</nav>
+                        
+                      <!--  <h1 class="h2">List of alerts</h1>
+                         <nav aria-label="breadcrumb">
+                         <ol class="breadcrumb bg-transparent">
+                         <li class="breadcrumb-item"><a href="#">Home</a></li>
+                         <li class="breadcrumb-item"><a href="#">Library</a></li>
+                         <li class="breadcrumb-item active" aria-current="page">Data</li>
+                         </ol>
+                         </nav>
+                         </div>
 
-	<main role="main">
-	    {% block content %}{% endblock %}
-	</main>
-
-	<footer class="container">
-	    <p>&copy; Company 2017-2018</p>
-	</footer>
-
-	<!-- Bootstrap core JavaScript
-	     ================================================== -->
-	<!-- Placed at the end of the document so the pages load faster -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+                         <p>
+                         Here is the list of alerts that were submitted recently:
+                         </p>
+                         <div class="table-responsive">
+                         <table class="table table-striped table-sm">
+                         <thead>
+                         <tr>
+                         <th>#</th>
+                         <th>Header</th>
+                         <th>Header</th>
+                         <th>Header</th>
+                         <th>Header</th>
+                         </tr>
+                         </thead>
+                         <tbody>
+                         <tr>
+                         <td>1,001</td>
+                         <td>Lorem</td>
+                         <td>ipsum</td>
+                         <td>dolor</td>
+                         <td>sit</td>
+                         </tr>
+                         <tr>
+                         <td>1,002</td>
+                         <td>amet</td>
+                         <td>consectetur</td>
+                         <td>adipiscing</td>
+                         <td>elit</td>
+                         </tr>
+                         <tr>
+                         <td>1,003</td>
+                         <td>Integer</td>
+                         <td>nec</td>
+                         <td>odio</td>
+                         <td>Praesent</td>
+                         </tr>
+                         <tr>
+                         <td>1,003</td>
+                         <td>libero</td>
+                         <td>Sed</td>
+                         <td>cursus</td>
+                         <td>ante</td>
+                         </tr>
+                         <tr>
+                         <td>1,004</td>
+                         <td>dapibus</td>
+                         <td>diam</td>
+                         <td>Sed</td>
+                         <td>nisi</td>
+                         </tr>
+                         <tr>
+                         <td>1,005</td>
+                         <td>Nulla</td>
+                         <td>quis</td>
+                         <td>sem</td>
+                         <td>at</td>
+                         </tr>
+                         <tr>
+                         <td>1,006</td>
+                         <td>nibh</td>
+                         <td>elementum</td>
+                         <td>imperdiet</td>
+                         <td>Duis</td>
+                         </tr>
+                         <tr>
+                         <td>1,007</td>
+                         <td>sagittis</td>
+                         <td>ipsum</td>
+                         <td>Praesent</td>
+                         <td>mauris</td>
+                         </tr>
+                         <tr>
+                         <td>1,008</td>
+                         <td>Fusce</td>
+                         <td>nec</td>
+                         <td>tellus</td>
+                         <td>sed</td>
+                         </tr>
+                         <tr>
+                         <td>1,009</td>
+                         <td>augue</td>
+                         <td>semper</td>
+                         <td>porta</td>
+                         <td>Mauris</td>
+                         </tr>
+                         <tr>
+                         <td>1,010</td>
+                         <td>massa</td>
+                         <td>Vestibulum</td>
+                         <td>lacinia</td>
+                         <td>arcu</td>
+                         </tr>
+                         <tr>
+                         <td>1,011</td>
+                         <td>eget</td>
+                         <td>nulla</td>
+                         <td>Class</td>
+                         <td>aptent</td>
+                         </tr>
+                         <tr>
+                         <td>1,012</td>
+                         <td>taciti</td>
+                         <td>sociosqu</td>
+                         <td>ad</td>
+                         <td>litora</td>
+                         </tr>
+                         <tr>
+                         <td>1,013</td>
+                         <td>torquent</td>
+                         <td>per</td>
+                         <td>conubia</td>
+                         <td>nostra</td>
+                         </tr>
+                         <tr>
+                         <td>1,014</td>
+                         <td>per</td>
+                         <td>inceptos</td>
+                         <td>himenaeos</td>
+                         <td>Curabitur</td>
+                         </tr>
+                         <tr>
+                         <td>1,015</td>
+                         <td>sodales</td>
+                         <td>ligula</td>
+                         <td>in</td>
+                         <td>libero</td>
+                         </tr>
+                         </tbody>
+                         </table> -->
+                         </div>
+                </main>
+            </div>
+        </div>
+        
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <!-- <script src="jquery-3.3.1.slim.min.js"></script> -->
+        <!-- <script src="popper.min.js"></script> -->
+        <!-- <script src="bootstrap.min.js"></script> -->
+        <script>
+         /* In submenu, navigation easier */
+         /* https://stackoverflow.com/questions/12805825/can-you-specify-a-data-target-for-bootstrap-which-refers-to-a-sibling-dom-elem */
+         $('body').on('click.mycollapse-next.data-api', '[data-toggle=mycollapse-next]', function (e) {
+             var $target = $(this).next().children(":first")
+             /* alert($target.attr("class")) */
+             $target.hasClass('collapse') ? $target.collapse('toggle') : $target.collapse()
+         })
+        </script>
     </body>
 </html>
+
+
