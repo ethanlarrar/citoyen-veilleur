@@ -1,6 +1,6 @@
 help:
 	@echo "To deploy, type:"
-	@echo "ssh push myserver master"
+	@echo "ssh push myserver master "
 
 install: bin/python
 
