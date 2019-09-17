@@ -7,7 +7,7 @@
 {% block content %}
 <h1>The list of the bad websites</h1>
 <p>
-    {% blocktrans trimmed count nb_alerts=nb_alerts %}
+    {% blocktrans trimmed count nb_alerts=page.paginator.count %}
     There is {{nb_alerts}} alert.
     {% plural %}
     There are {{nb_alerts}} alerts.
@@ -18,34 +18,7 @@
     <a href="{% url 'sitereview:display_website_alert' site.id %}">{{site.title}}</a><br>
     {% endfor %}  
 </p>
-<p>
-    
-    {% if page.has_previous %}
-    
-    {% if page.previous_page_number != 1 %}
-    <a href="{% url 'sitereview:list_website_alert' 1 %}">1</a>
-    {% if page.previous_page_number > 2 %}
-    ...
-    {% endif %}
-    {% endif %}
-    
-    <a href="{% url 'sitereview:list_website_alert' page.previous_page_number %}">{{page.previous_page_number}}</a>    
-    {% endif %}
 
-    {{page.number}}
-    
-    {% if page.has_next %}    
-    <a href="{% url 'sitereview:list_website_alert' page.next_page_number %}">{{page.next_page_number}}</a>
+{% include "sitereview/pagination.html" with page=page view_name="sitereview:list_website_alert" %}
 
-    {% if page.next_page_number != toutes_les_pages %}
-
-    {% if page.next_page_number != toutes_les_pages|add:"-1" %}
-    ...
-    {% endif %}
-    <a href="{% url 'sitereview:list_website_alert' toutes_les_pages %}">{{toutes_les_pages}}</a>    
-    {% endif %}
-    
-    {% endif %}
-    
-</p>
 {% endblock %}

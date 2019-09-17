@@ -115,14 +115,16 @@
                                                 Report websites
                                             </a>
                                         </li>
+					{% if perms.sitereview.can_verify %}
                                         <li class="nav-item">
                                             <a class="nav-link" href="{% url 'sitereview:list_website_alert' %}">
                                                 All alerts
                                             </a>
                                         </li>
+					{% endif %}
                                         {% if perms.sitereview.can_verify %}
                                         <li class="nav-item">
-                                            <a class="nav-link" href="{% url 'sitereview:validate_list_website_alert'%}">
+                                            <a class="nav-link" href="{% url 'sitereview:validate_list_website_alert' %}">
                                                 Moderate
                                             </a>
                                         </li>

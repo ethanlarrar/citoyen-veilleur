@@ -12,6 +12,9 @@
     <a href="{% url 'sitereview:display_website_alert' site.id %}">{{site.title}}</a><br>
     {% endfor %}   
 </p>
+
+{% include "sitereview/pagination.html" with page=page view_name="sitereview:validate_list_website_alert" %}
+
 {% else %}
 You have not the requested permissions to validate websites.
 {% endif %}

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'sitereview.apps.SitereviewConfig',
     'django_registration',
+    'mathfilters',
 ]
 
 MIDDLEWARE = [
