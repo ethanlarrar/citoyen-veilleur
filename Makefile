@@ -4,7 +4,7 @@ help:
 
 install: bin/python
 
-bin/python:
+bin/python: requirements.txt
 	virtualenv -p python3 .
 	bin/pip install -r requirements.txt
 
