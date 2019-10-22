@@ -11,16 +11,19 @@ import base64
 from django.utils.translation import gettext as _, ngettext
 
 ## TODO:
-# 2) afficher via un système de pagination
-#    - "externaliser" en le mettant ce dans un fichier exprèsf pagination.html, via include https://docs.djangoproject.com/fr/2.1/ref/templates/builtins/#include
-# 3) créer une page qui valide un site
-# 4) ajouter une verification pour seuls les personnes dans le groupe validateurs puisse valider le site https://docs.djangoproject.com/fr/2.1/topics/auth/default/.
-# 5) Afficher les boutons pour changer de page.
-# 6) Vérifier que l'utilisateur a les bons droits via les permissions pour valider un site + cacher l'onglet dans la liste pour les autres utilisateurs
+# 1) Pagination du alerts
+# 2) plus tard: mettre plus de 3 alertes par page
+# 3) créer une page présentation
+# 4) faire la traduction
+# 5) rendre formulaires beaux
+# 6) sign in
+
+
+
 
 # Cre=te your views here.
 def index(request):
-    # Méthode 1
+    # MÃ©thode 1
     # template = loader.get_template('sitereview/index.html')
     if request.user.is_authenticated:
         context = {'user': request.user}
@@ -28,7 +31,7 @@ def index(request):
         context = {'user': None}
     ## Pour y acceder en python: context['age_utilisateur']
     # return HttpResponse(template.render(context, request))
-    ## Méthode 2 (condensée)
+    ## MÃ©thode 2 (condensÃ©e)
     context.update({'remove_main_div': True})
     context.update({'tab':'home'})
     return render(request, 'sitereview/index.html', context)
@@ -54,7 +57,7 @@ def detail(request,question_id):
         return HttpResponse("La question n'existe pas")
 
 def afficher_questions(request):
-    ### Deuxième temps:
+    ### DeuxiÃ¨me temps:
     ## Afficher la liste de toutes les questions (seulement le titre)
     # Indice: cf tutoriel chapitre 2
     pass
@@ -100,10 +103,10 @@ def list_website_alert(request, page=1):
     
 
 
-#Méthode 2
+#MÃ©thode 2
 @login_required
 def create_website_alert(request):
-    # Méthode 1
+    # MÃ©thode 1
     # if not request.user.is_authenticated:
     #     raise PermissionDenied
     if request.method == "POST":        
@@ -150,12 +153,48 @@ def website_exists(request, url_b64):
     except:
         url = ""
     print(url)
-    sites = Website_alert.objects.filter(url = url) # le premier url se réfère au nom du champ (colonne) dans la base de donnée, le deuxième url se réfère à la variable définie juste avant
-    if sites: # Sert à vérifier si 'sites' n'est pas vide, comme if len(sites) > 0
+    sites = Website_alert.objects.filter(url = url) # le premier url se rÃ©fÃ¨re au nom du champ (colonne) dans la base de donnÃ©e, le deuxiÃ¨me url se rÃ©fÃ¨re Ã  la variable dÃ©finie juste avant
+    if sites: # Sert Ã  vÃ©rifier si 'sites' n'est pas vide, comme if len(sites) > 0
         return JsonResponse({'exists': True, 'url': url})
     else:
         return JsonResponse({'exists': False, 'url': url})
 
+@login_required
+@permission_required('sitereview.can_verify', raise_exception=True)
+def validate_website_alert(request, website_alert_id):
+
+    website_alert = get_object_or_404(Website_alert,id=website_alert_id)
+    website_alert.verify = True
+    website_alert.save()
+    return HttpResponseRedirect(reverse('sitereview:display_website_alert', args=(website_alert_id,)))
+
+@login_required
+@permission_required('sitereview.can_unverify', raise_exception=True)
+def unvalidate_website_alert(request, website_alert_id):
+    website_alert = get_object_or_404(Website_alert,id=website_alert_id)
+    website_alert.verify = False
+    website_alert.save()
+    return HttpResponseRedirect(reverse('sitereview:display_website_alert', args=(website_alert_id,)))
+
+@login_required
+@permission_required('sitereview.can_verify', raise_exception=True)
+def edit_website_alert(request, website_alert_id):
+    website_alert = get_object_or_404(Website_alert,id=website_alert_id)
+    if request.method == "POST":        
+        # A form has been sent
+        form = CreateForm(request.POST, instance=website_alert)
+        if form.is_valid():
+            new_website = form.save(commit=False)            
+            new_website.save()
+            return HttpResponseRedirect(reverse('sitereview:display_website_alert', args=(new_website.id,)))
+    else:
+        # The user wants to see the form
+        form = CreateForm(instance=website_alert)
+    context = {'form': form, 'website_alert':website_alert }
+    context.update({'tab':'edit_alerts'})
+    return render(request, 'sitereview/edit_website_alert.html', context)
+    
+    
     
 
 

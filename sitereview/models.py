@@ -57,7 +57,9 @@ class Website_alert(models.Model):
         except ZeroDivisionError:
             return 0
     class Meta:
-        permissions = (("can_verify", "Can verify a website alert"),)
+        permissions = (("can_verify", "Can verify a website alert"),
+                       ("can_unverify", "Can unverify a website alert"),
+                       ("can_edit", "Can edit a website alert"))
             
     
 

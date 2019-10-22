@@ -17,5 +17,7 @@ urlpatterns = [
     path('list_verified_website_alert/',views.list_verified_website_alert, name='list_verified_website_alert'),
     path('website_exists/<path:url_b64>',views.website_exists, name='website_exists'),
     path('already_voted/', TemplateView.as_view(template_name="sitereview/already_voted.html"),name='already_voted' ),
+    path('validate_website_alert/<int:website_alert_id>/',views.validate_website_alert, name='validate_website_alert'),
+    path('unvalidate_website_alert/<int:website_alert_id>/',views.unvalidate_website_alert, name='unvalidate_website_alert'),
+    path('edit_website_alert/<int:website_alert_id>/',views.edit_website_alert, name='edit_website_alert'),
 ]
-

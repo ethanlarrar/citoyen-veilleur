@@ -3,6 +3,18 @@
 {% block title %} {{website_alert.title}} {% endblock %}
 
 {% block content %}
+{% if perms.sitereview.can_verify and website_alert.verify == False %}
+<a href="{% url 'sitereview:validate_website_alert' website_alert.id %}" type="button" class="btn btn-success"> Validate </a>
+{% endif %}
+
+{% if perms.sitereview.can_edit %}
+<a href="{% url 'sitereview:edit_website_alert' website_alert.id %}"  type="button" class="btn btn-warning">Edit</a>
+{% endif %}
+
+{% if perms.sitereview.can_unverify and website_alert.verify == True %}
+<a href="{% url 'sitereview:unvalidate_website_alert' website_alert.id %}" type="button" class="btn btn-danger"> Delete </a>
+{% endif %}
+
 <p><a href="{% url 'sitereview:list_website_alert' %}">Return to the list</a></p>
 <h1>{{website_alert.title}}</h1>
 {% if website_alert.site_closed %}

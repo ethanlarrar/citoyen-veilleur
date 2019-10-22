@@ -1,0 +1,15 @@
+{% extends "sitereview/base.html" %}
+
+{% block title %} Edit {% endblock %}
+
+
+{% block content %}
+<h1>Edit website alert</h1>
+<form method="post" action="{% url 'sitereview:edit_website_alert' website_alert.id %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit">
+</form>
+
+
+{% endblock %}
