@@ -1,5 +1,7 @@
 {% extends "sitereview/base.html" %}
 
+{% load crispy_forms_tags %}
+
 {% block title %} Create {% endblock %}
 
 
@@ -7,9 +9,9 @@
 <h1>Create website alert</h1>
 <form method="post" action="{% url 'sitereview:create_website_alert' %}">
     {% csrf_token %}
-    {{ form.as_p }}
-    {{ form_vote.as_p }}
-    <input type="submit" value="Submit">
+    {{ form|crispy }}
+    {{ form_vote|crispy }}
+    <input type="submit" class="btn btn-success" value="Submit">
 </form>
 
 <script>

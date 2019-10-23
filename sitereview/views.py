@@ -16,7 +16,6 @@ from django.utils.translation import gettext as _, ngettext
 # 3) créer une page présentation
 # 4) faire la traduction
 # 5) rendre formulaires beaux
-# 6) sign in
 
 
 

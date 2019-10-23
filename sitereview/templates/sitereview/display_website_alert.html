@@ -1,5 +1,5 @@
 {% extends 'sitereview/base.html' %}
-
+{% load crispy_forms_tags %}
 {% block title %} {{website_alert.title}} {% endblock %}
 
 {% block content %}
@@ -35,8 +35,8 @@
 {% if request.user.is_anonymous is not True %}
 <form method="post" action=".">
     {% csrf_token %}
-    {{ form_vote.as_p }}
-    <input type="submit" value="Submit">
+    {{ form_vote|crispy }}
+    <input type="submit"  class="btn btn-success" value="Submit">
 </form>
 {% endif %}
 {% endblock %}
